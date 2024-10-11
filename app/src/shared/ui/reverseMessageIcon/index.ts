@@ -1,0 +1,1 @@
+export { ReverseMessageIcon } from "./ReverseMessageIcon";

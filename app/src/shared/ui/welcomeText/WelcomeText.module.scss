@@ -1,0 +1,35 @@
+.weclomeTextWraper {
+  text-align: center;
+}
+
+.text {
+  color: #ffffff;
+  text-align: center;
+
+  &_big {
+    font-weight: 700;
+    line-height: 35px;
+    font-size: 2rem;
+  }
+
+  &_small {
+    font-weight: 400;
+    line-height: 18px;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text {
+    &_big {
+      font-weight: 700;
+      line-height: 35px;
+      font-size: 3.5rem;
+    }
+
+    &_small {
+      display: inline-block;
+      max-width: 750px;
+    }
+  }
+}
