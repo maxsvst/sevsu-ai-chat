@@ -19,8 +19,12 @@ export type ApiResponse = {
   statusCode: number;
   path: string;
   message?: string;
-  result?: unknown;
 };
+
+export interface RefreshApiResponse extends ApiResponse {
+  accessToken: string;
+  refreshToken: string;
+}
 
 const fetchFunction = async ({
   url,
@@ -29,22 +33,25 @@ const fetchFunction = async ({
   tags,
   revalidateTime,
 }: FetchOptions) => {
-  //   const session = await getServerAuthSession();
-  //   const accessToken = session.backendTokens.accessToken;
-
   const requestUrl = API_URL + url;
+
+  const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
 
   return await fetch(requestUrl, {
     method,
     body,
     headers: {
       "Content-Type": "application/json",
+      Authorization:
+        url === "/auth/refresh"
+          ? `Refresh ${refreshToken}`
+          : `Bearer ${accessToken}`,
     },
-    // ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : null),
-    next: {
-      tags,
-      ...(revalidateTime && { revalidate: revalidateTime }),
-    },
+    // next: {
+    //   tags,
+    //   ...(revalidateTime && { revalidate: revalidateTime }),
+    // },
   });
 };
 
@@ -65,7 +72,14 @@ export const api = {
     });
 
     const json = await res.json();
-    !json.status && console.error(`ERROR ${method} url: ${url}`, json);
+    console.log(res);
+    res.status > 210 && console.error(`ERROR ${method} url: ${url}`, json);
+
+    if (json.statusCode === 401) {
+      const refresh = (await api.post("/auth/refresh")) as RefreshApiResponse;
+      localStorage.setItem("accessToken", refresh.accessToken);
+      localStorage.setItem("refreshToken", refresh.refreshToken);
+    }
 
     return json;
   },

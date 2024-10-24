@@ -1,0 +1,18 @@
+.inputWrapper {
+  background: #5f5f5f;
+  padding: 11px 24px;
+  border-radius: 100px;
+  width: 100%;
+  display: flex;
+}
+
+.emailInput,
+.passInput {
+  color: #ffffff;
+  width: 100%;
+}
+
+.emailInput::placeholder,
+.passInput::placeholder {
+  color: #d0d0d0;
+}

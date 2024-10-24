@@ -1,0 +1,36 @@
+.registrationFormWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin: auto 0;
+}
+
+.step {
+  color: #d0d0d0;
+}
+
+.registrationForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(48, 48, 48, 1) 0%,
+    rgba(48, 48, 48, 1) 20%,
+    rgba(47, 47, 47, 1) 100%
+  );
+  border-radius: 24px;
+  padding: 32px 16px;
+  margin: auto 0;
+  width: 100%;
+}
+
+@media (min-width: 564px) {
+  .registrationForm {
+    width: 500px;
+    margin: auto auto;
+  }
+}

@@ -1,8 +1,9 @@
+import React from "react";
+import styles from "./Home.module.scss";
+
 import { Button } from "@/shared/ui/button";
 import { HealthIcon } from "@/shared/ui/healthIcon";
 import { WelcomeText } from "@/shared/ui/welcomeText";
-import React from "react";
-import styles from "./Home.module.scss";
 import { MessageIcon } from "@/shared/ui/messageIcon";
 import { ReverseMessageIcon } from "@/shared/ui/reverseMessageIcon";
 
@@ -33,13 +34,21 @@ export const Home = () => {
             textVariant={TextVariant.Small}
           />
         </section>
-        <section className={styles.buttonsWrapper}>
-          <Button text="Вход" theme={ButtonTheme.Dark} />
-          <Button text="Регистрация" theme={ButtonTheme.Light} />
-        </section>
+        <nav className={styles.buttonsWrapper}>
+          <Button
+            hrefTo="/authorization"
+            text="Вход"
+            theme={ButtonTheme.Dark}
+          />
+          <Button
+            hrefTo="/registration"
+            text="Регистрация"
+            theme={ButtonTheme.Light}
+          />
+        </nav>
       </div>
       <ReverseMessageIcon />
-      <div className={styles.chats} />
+      <section className={styles.chats} />
     </div>
   );
 };

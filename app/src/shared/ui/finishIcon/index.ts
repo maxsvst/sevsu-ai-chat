@@ -1,0 +1,1 @@
+export { FinishIcon } from "./FinishIcon";
