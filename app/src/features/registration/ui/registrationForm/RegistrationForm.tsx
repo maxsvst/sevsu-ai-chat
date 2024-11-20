@@ -14,12 +14,12 @@ import {
 } from "react-hook-form";
 
 import { z } from "zod";
-import { Input } from "@/shared/ui/input";
+import { Input } from "@/shared/ui/molecules/input";
 import { useRouter } from "next/navigation";
-import { NextButton } from "@/shared/ui/nextButton";
-import { NextIcon } from "@/shared/ui/nextIcon";
-import { FinishIcon } from "@/shared/ui/finishIcon";
-import { HeadingText } from "@/shared/ui/headingText";
+import { NextButton } from "@/shared/ui/molecules/nextButton";
+import { NextIcon } from "@/shared/ui/atoms/nextIcon";
+import { FinishIcon } from "@/shared/ui/atoms/finishIcon";
+import { HeadingText } from "@/shared/ui/atoms/headingText";
 import { RegistrationFormDataSchema } from "@/shared/model/registrationFormDataSchema";
 import { api } from "@/shared/api";
 
@@ -56,7 +56,8 @@ export const RegistrationForm = ({
         fullName: name,
       })
     );
-    console.log(res.result);
+    console.log(res);
+    if (res.statusCode < 400) router.push("/authorization");
   };
 
   return (

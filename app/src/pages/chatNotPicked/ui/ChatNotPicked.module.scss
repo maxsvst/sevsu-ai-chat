@@ -1,0 +1,89 @@
+.wrapper {
+  padding: 16px;
+  color: #ffffff;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.chatSectionWrapper {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.chatListWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chatItemWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.chatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  align-self: center;
+  margin: 0 auto;
+  gap: 24px;
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 40px;
+  border-radius: 24px;
+}
+
+.sectionArticle {
+  font-size: 2rem;
+}
+
+.listWrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(0, 255, 8, 0.6);
+  border-radius: 100px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.inputWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background-color: rgba(95, 95, 95, 1);
+  border-radius: 100px;
+  padding: 5px 5px 5px 24px;
+}
+
+.searchInput {
+  font-size: 14px;
+  width: 100%;
+}

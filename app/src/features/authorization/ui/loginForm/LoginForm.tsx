@@ -3,12 +3,12 @@
 import React from "react";
 import styles from "./LoginForm.module.scss";
 
-import { Input } from "@/shared/ui/input";
+import { Input } from "@/shared/ui/molecules/input";
 import { useRouter } from "next/navigation";
 import { api, API_URL, ApiResponse } from "@/shared/api";
-import { NextButton } from "@/shared/ui/nextButton";
-import { NextIcon } from "@/shared/ui/nextIcon";
-import { HeadingText } from "@/shared/ui/headingText";
+import { NextButton } from "@/shared/ui/molecules/nextButton";
+import { NextIcon } from "@/shared/ui/atoms/nextIcon";
+import { HeadingText } from "@/shared/ui/atoms/headingText";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 interface LoginResDto extends ApiResponse {
@@ -40,6 +40,8 @@ export const LoginForm = () => {
       "/auth/login",
       JSON.stringify(data)
     )) as LoginResDto;
+
+    // router.push("/chat");
 
     const res1 = await api.get("/users/all");
 

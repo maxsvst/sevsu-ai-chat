@@ -43,10 +43,10 @@ const fetchFunction = async ({
     body,
     headers: {
       "Content-Type": "application/json",
-      Authorization:
-        url === "/auth/refresh"
-          ? `Refresh ${refreshToken}`
-          : `Bearer ${accessToken}`,
+      // Authorization:
+      //   url === "/auth/refresh"
+      //     ? `Refresh ${refreshToken}`
+      //     : `Bearer ${accessToken}`,
     },
     // next: {
     //   tags,
@@ -75,11 +75,16 @@ export const api = {
     console.log(res);
     res.status > 210 && console.error(`ERROR ${method} url: ${url}`, json);
 
-    if (json.statusCode === 401) {
-      const refresh = (await api.post("/auth/refresh")) as RefreshApiResponse;
-      localStorage.setItem("accessToken", refresh.accessToken);
-      localStorage.setItem("refreshToken", refresh.refreshToken);
-    }
+    // if (json.statusCode === 401) {
+    //   const refresh = (await api.post("/auth/refresh")) as RefreshApiResponse;
+    //   console.log("до", refresh);
+    //   localStorage.setItem("accessToken", refresh.accessToken);
+    //   localStorage.setItem("refreshToken", refresh.refreshToken);
+    //   console.log("после", refresh);
+    //   method === HtttpMethod.GET
+    //     ? await api.get(url)
+    //     : await api.post(url, body!);
+    // }
 
     return json;
   },

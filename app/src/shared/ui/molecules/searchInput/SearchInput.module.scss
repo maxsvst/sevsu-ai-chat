@@ -1,0 +1,15 @@
+.inputWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background-color: rgba(95, 95, 95, 1);
+  border-radius: 100px;
+  padding: 5px 5px 5px 24px;
+}
+
+.searchInput {
+  font-size: 14px;
+  width: 100%;
+}

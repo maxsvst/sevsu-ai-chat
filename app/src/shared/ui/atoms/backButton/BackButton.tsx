@@ -4,8 +4,8 @@ import React from "react";
 import Link from "next/link";
 
 import styles from "./BackButton.module.scss";
+
 import { ArrowIcon } from "../arrowIcon";
-import { Value } from "sass";
 
 export interface BackButtonProps {
   currentStep?: number;

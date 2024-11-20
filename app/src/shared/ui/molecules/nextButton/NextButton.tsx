@@ -23,7 +23,7 @@ export const NextButton = ({
       type={!!type ? type : "button"}
     >
       <div style={{ width: "32px", height: "32px" }} />
-      <span>{text}</span>
+      <span style={{ color: "black" }}>{text}</span>
       {icon}
     </button>
   );

@@ -1,11 +1,12 @@
 import React from "react";
+
 import styles from "./Home.module.scss";
 
-import { Button } from "@/shared/ui/button";
-import { HealthIcon } from "@/shared/ui/healthIcon";
-import { WelcomeText } from "@/shared/ui/welcomeText";
-import { MessageIcon } from "@/shared/ui/messageIcon";
-import { ReverseMessageIcon } from "@/shared/ui/reverseMessageIcon";
+import { Button } from "@/shared/ui/atoms/button";
+import { HealthIcon } from "@/shared/ui/atoms/healthIcon";
+import { WelcomeText } from "@/shared/ui/atoms/welcomeText";
+import { MessageIcon } from "@/shared/ui/atoms/messageIcon";
+import { ReverseMessageIcon } from "@/shared/ui/atoms/reverseMessageIcon";
 
 enum ButtonTheme {
   Dark = "dark",

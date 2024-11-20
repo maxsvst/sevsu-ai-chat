@@ -2,9 +2,8 @@
 
 import React, { useState } from "react";
 import styles from "./Input.module.scss";
-import { ShowPassIcon } from "../showPassIcon";
-import { HidePassIcon } from "../hidePassIcon/HidePassIcon";
-import { register } from "module";
+import { ShowPassIcon } from "../../atoms/showPassIcon";
+import { HidePassIcon } from "../../atoms/hidePassIcon/HidePassIcon";
 import { FieldValues, UseFormRegisterReturn } from "react-hook-form";
 
 export const Input = ({
