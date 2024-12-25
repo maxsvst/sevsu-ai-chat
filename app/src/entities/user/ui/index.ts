@@ -1,1 +1,1 @@
-export { WithUserModal } from "./hoc/WithUserModal";
+export { WithModal } from "./hoc/WithUserModal";

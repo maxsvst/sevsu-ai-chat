@@ -1,21 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+
+import { useSelector } from "react-redux";
+
+import { selectModal } from "@/entities/modal/model/modalSlice";
+
+import { Hints } from "@/shared/ui/molecules/hints";
+import { Header } from "@/shared/ui/molecules/header";
+import { SearchInput } from "@/shared/ui/molecules/searchInput";
 
 import styles from "./WelcomeChat.module.scss";
 
-import { Header } from "@/shared/ui/molecules/header";
-import { Hints } from "@/shared/ui/molecules/hints";
-import { SearchInput } from "@/shared/ui/molecules/searchInput";
-import { api } from "@/shared/api";
-import { useSelector } from "react-redux";
-import { selectModal } from "@/entities/modal/model/modalSlice";
-
 export function WelcomeChat() {
-  const { isSettingsVisible } = useSelector(selectModal);
+  const { isSettingsVisible, isProfileVisible, isQuitVisible } =
+    useSelector(selectModal);
+
+  const isBlur = isSettingsVisible || isProfileVisible || isQuitVisible;
 
   return (
-    <div className={isSettingsVisible ? styles.wrapperBlured : styles.wrapper}>
+    <div className={isBlur ? styles.wrapperBlured : styles.wrapper}>
       <Header />
       <section className={styles.sectionWrapper}>
         <article className={styles.sectionArticle}>

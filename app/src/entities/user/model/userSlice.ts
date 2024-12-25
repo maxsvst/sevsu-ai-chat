@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "@/app/store";
 // import { Chat, Message, IUser } from "@/entities/chat/model/types";
@@ -114,20 +114,21 @@ const userReducer = createSlice({
       state.refreshToken = action.payload.backendTokens.refreshToken;
       localStorage.setItem("accessToken", state.accessToken!);
       localStorage.setItem("refreshToken", state.refreshToken!);
-    });
-    builder.addCase(getUser.fulfilled, (state, action) => {
-      state.user = action.payload;
-    });
-    builder.addCase(signupUser.fulfilled, (state, action) => {
-      state.user = action.payload;
-    });
-    builder.addCase(editUser.fulfilled, (state, action) => {
-      state.user = action.payload;
-    });
+    }),
+      builder.addCase(getUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+      }),
+      builder.addCase(signupUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+      }),
+      builder.addCase(editUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+      });
   },
 });
 
 export const selectUser = (state: RootState) => state.user.user;
+export const selectStatus = (state: RootState) => state.user.status;
 
 export const { logout } = userReducer.actions;
 

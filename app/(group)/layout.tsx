@@ -29,7 +29,8 @@ export default function ChatsLayout({
   const dispatch = useAppDispatch();
 
   const { chats } = useSelector(selectChats);
-  const { isSettingsVisible } = useSelector(selectModal);
+  const { isSettingsVisible, isProfileVisible, isQuitVisible } =
+    useSelector(selectModal);
 
   // console.log("chats", chats);
 
@@ -64,8 +65,10 @@ export default function ChatsLayout({
     dispatch(deleteChat(id));
   };
 
+  const isBlur = isSettingsVisible || isProfileVisible || isQuitVisible;
+
   return (
-    <div className={isSettingsVisible ? styles.wrapperBlured : styles.wrapper}>
+    <div className={isBlur ? styles.wrapperBlured : styles.wrapper}>
       <section className={styles.chatSectionWrapper}>
         <ul className={styles.chatListWrapper}>
           {!!chats.length &&
@@ -95,7 +98,7 @@ export default function ChatsLayout({
                       })}
                     </span>
                   ) : (
-                    <span>Сообщений нет</span>
+                    <span style={{ fontSize: "12px" }}>Сообщений нет</span>
                   )}
                 </div>
                 <div
@@ -121,8 +124,8 @@ export default function ChatsLayout({
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M7.333 1.333a0.667 0.667 0 0 0 -0.667 0.667v0.667h2.667V2a0.667 0.667 0 0 0 -0.667 -0.667zm3.333 1.333V2A2 2 0 0 0 8.666 0h-1.333a2 2 0 0 0 -2 2v0.667H2a0.667 0.667 0 0 0 0 1.333h0.07l1.136 10.221A2 2 0 0 0 5.194 16h5.613a2 2 0 0 0 1.989 -1.779L13.93 4h0.07a0.667 0.667 0 1 0 0 -1.333zm1.922 1.333H3.411l1.12 10.074a0.667 0.667 0 0 0 0.662 0.594h5.613a0.667 0.667 0 0 0 0.662 -0.594zm-5.92 2.002a0.667 0.667 0 0 1 0.667 0.667V12a0.667 0.667 0 1 1 -1.333 0V6.667a0.667 0.667 0 0 1 0.667 -0.667m2.667 0a0.667 0.667 0 0 1 0.667 0.667V12a0.667 0.667 0 1 1 -1.333 0V6.667a0.667 0.667 0 0 1 0.667 -0.667"
                       fill="#ffffff"
                       id="id_102"

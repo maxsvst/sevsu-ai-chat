@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+
 import { useRouter } from "next/navigation";
 
-import styles from "./SearchInput.module.scss";
-
-import { SendIcon } from "../../atoms/sendIcon";
 import { api } from "@/shared/api";
-import { title } from "process";
+import { SendIcon } from "../../atoms/sendIcon";
+
+import styles from "./SearchInput.module.scss";
 
 export const SearchInput = () => {
   const router = useRouter();
@@ -16,9 +16,11 @@ export const SearchInput = () => {
 
   const clickHandler = async () => {
     const chat = await api.post("/chat", JSON.stringify({ title: message }));
-    const messageRes = await api.get(`/ai/get-mock-answer/${chat.id}/${message}`);
+    const messageRes = await api.get(
+      `/ai/get-mock-answer/${chat.id}/${message}`
+    );
     const chats = await api.get("/chat");
-    router.push(`/chatPicked/${chat.id}`)
+    router.push(`/chatPicked/${chat.id}`);
   };
 
   return (

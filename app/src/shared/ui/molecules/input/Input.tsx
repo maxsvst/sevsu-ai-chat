@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./Input.module.scss";
+
+import { FieldValues, UseFormRegisterReturn } from "react-hook-form";
+
 import { ShowPassIcon } from "../../atoms/showPassIcon";
 import { HidePassIcon } from "../../atoms/hidePassIcon/HidePassIcon";
-import { FieldValues, UseFormRegisterReturn } from "react-hook-form";
+
+import styles from "./Input.module.scss";
 
 export const Input = ({
   type,

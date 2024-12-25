@@ -1,16 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import styles from "./SettingsModal.module.scss";
-import { WithUserModal } from "@/entities/user/ui";
-import { Input } from "../input";
-import { CloseIcon } from "../../atoms/closeIcon";
-import { api } from "@/shared/api";
-import { useForm } from "react-hook-form";
-import { useAppDispatch } from "@/app/store";
+import React, { useEffect } from "react";
+
+import { z } from "zod";
 import { useSelector } from "react-redux";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+
 import { editUser, getUser, selectUser } from "@/entities/user/model/userSlice";
 import { setSettingsVisibility } from "@/entities/modal/model/modalSlice";
+import { useAppDispatch } from "@/app/store";
+
+import { Input } from "../input";
+import { WithModal } from "@/entities/user/ui";
+import { Error } from "../../atoms/error/Error";
+import { CloseIcon } from "../../atoms/closeIcon";
+import { EditProfileFormDataSchema } from "@/shared/model/editProfileDataSchema";
+
+import styles from "./SettingsModal.module.scss";
+
+type Inputs = z.infer<typeof EditProfileFormDataSchema>;
+type PartialInputs = Partial<Inputs>;
 
 const SettingsModal = () => {
   const dispatch = useAppDispatch();
@@ -18,11 +28,12 @@ const SettingsModal = () => {
 
   const {
     register,
-    reset,
     handleSubmit,
-    // formState: { errors },
-  } = useForm<any>({
-    // resolver: zodResolver(FormDataSchema),
+    formState: { errors },
+  } = useForm<Inputs>({
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+    resolver: zodResolver(EditProfileFormDataSchema.partial()),
   });
 
   // console.log(fullName, email, weight, height);
@@ -31,14 +42,16 @@ const SettingsModal = () => {
     dispatch(getUser());
   }, []);
 
-  const processForm: any = async (data: any) => {
-    const { fullName, email, weight, height } = data;
-    const payload: any = {};
+  console.log("errors", errors);
 
-    if (!!fullName) {
+  const processForm: SubmitHandler<Inputs> = async (data: Inputs) => {
+    const { fullName, email, weight, height, password } = data;
+    const payload: PartialInputs = {};
+
+    if (!!fullName?.trim()) {
       payload.fullName = fullName;
     }
-    if (!!email) {
+    if (!!email?.trim()) {
       payload.email = email;
     }
     if (!!weight) {
@@ -47,8 +60,11 @@ const SettingsModal = () => {
     if (!!height) {
       payload.height = height;
     }
+    if (!!password) {
+      payload.password = password;
+    }
 
-    dispatch(editUser(payload));
+    await dispatch(editUser(payload));
     dispatch(setSettingsVisibility(false));
   };
 
@@ -60,29 +76,53 @@ const SettingsModal = () => {
       <CloseIcon clickHandler={() => dispatch(setSettingsVisibility(false))} />
       <div className={styles.settingsModalTitle}>Настройки</div>
       <div className={styles.settingsModalForm}>
-        <Input
-          type="text"
-          placeholder={fullName || "Имя"}
-          register={register("fullName")}
-        />
-        <Input
-          type="text"
-          placeholder={email || "E-mail"}
-          register={register("email")}
-        />
+        <div style={{ width: "100%" }}>
+          <Input
+            type="text"
+            placeholder={fullName || "Имя"}
+            register={register("fullName")}
+            isError={!!errors.fullName}
+          />
+          <Error field={errors.fullName} />
+        </div>
+        <div style={{ width: "100%" }}>
+          <Input
+            type="text"
+            placeholder={email || "E-mail"}
+            register={register("email")}
+            isError={!!errors.email}
+          />
+          <Error field={errors.email} />
+        </div>
         <hr className={styles.settingsModalDivider} />
-        <Input
-          type="number"
-          placeholder={String(height) || "Рост"}
-          register={register("height")}
-        />
-        <Input
-          type="number"
-          placeholder={String(weight) || "Вес"}
-          register={register("weight")}
-        />
+        <div style={{ width: "100%" }}>
+          <Input
+            type="number"
+            placeholder={String(height) || "Рост"}
+            register={register("height")}
+            isError={!!errors.height}
+          />
+          <Error field={errors.height} />
+        </div>
+        <div style={{ width: "100%" }}>
+          <Input
+            type="number"
+            placeholder={String(weight) || "Вес"}
+            register={register("weight")}
+            isError={!!errors.weight}
+          />
+          <Error field={errors.weight} />
+        </div>
         <hr className={styles.settingsModalDivider} />
-        <Input type="password" placeholder="Новый пароль" />
+        <div style={{ width: "100%" }}>
+          <Input
+            type="password"
+            placeholder="Новый пароль"
+            register={register("password")}
+            isError={!!errors.password}
+          />
+          <Error field={errors.password} />
+        </div>
       </div>
       <button className={styles.settingsModalSaveBtn} type="submit">
         Сохранить
@@ -91,4 +131,4 @@ const SettingsModal = () => {
   );
 };
 
-export default WithUserModal(SettingsModal);
+export default WithModal(SettingsModal, "settings");

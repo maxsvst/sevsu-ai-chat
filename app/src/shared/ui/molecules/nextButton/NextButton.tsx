@@ -1,6 +1,7 @@
 "use client";
 
 import React, { MouseEventHandler, ReactElement } from "react";
+
 import styles from "./NextButton.module.scss";
 
 export interface NextButtonProps {

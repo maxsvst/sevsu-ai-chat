@@ -2,9 +2,6 @@
 
 import { createPortal } from "react-dom";
 
-export const WithUserModal = (Component: any) => (props: any) => {
-  return createPortal(
-    <Component {...props} />,
-    document.getElementById("settings")!
-  );
+export const WithModal = (Component: any, id: string) => (props: any) => {
+  return createPortal(<Component {...props} />, document.getElementById(id)!);
 };

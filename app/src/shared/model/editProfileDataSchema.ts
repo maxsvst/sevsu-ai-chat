@@ -1,7 +1,24 @@
 import { z } from "zod";
 
-export const LoginFormDataSchema = z.object({
-  email: z.string().email("Неверный e-mail"),
+export const EditProfileFormDataSchema = z.object({
+  fullName: z.string().min(1, "Введите имя").optional(),
+  weight: z
+    .string()
+    .transform(Number)
+    .refine((val) => !isNaN(val), "Значение должно быть числом")
+    .refine((val) => val >= 0, "Некорректное значение")
+    .optional(),
+  height: z
+    .string()
+    .transform(Number)
+    .refine((val) => !isNaN(val), "Значение должно быть числом")
+    .refine((val) => val >= 0, "Некорректное значение")
+    .optional(),
+  email: z
+    .string()
+    .min(1, "Введите e-mail")
+    .email("Некорректный e-mail")
+    .optional(),
   password: z
     .string()
     .min(8, "Пароль должен содержать не менее 8 символов")
@@ -18,5 +35,6 @@ export const LoginFormDataSchema = z.object({
     .regex(
       /(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-])/,
       "Пароль должен содержать как минимум один спецсимвол"
-    ),
+    )
+    .optional(),
 });

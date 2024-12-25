@@ -1,30 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import styles from "./RegistrationForm.module.scss";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  useForm,
-  SubmitHandler,
-  UseFormRegister,
-  FieldValue,
-  FieldValues,
-} from "react-hook-form";
+import React from "react";
 
 import { z } from "zod";
-import { Input } from "@/shared/ui/molecules/input";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { NextButton } from "@/shared/ui/molecules/nextButton";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { selectUser, signupUser } from "@/entities/user/model/userSlice";
+import { useAppDispatch } from "@/app/store";
+
+import { Input } from "@/shared/ui/molecules/input";
 import { NextIcon } from "@/shared/ui/atoms/nextIcon";
+import { Error } from "@/shared/ui/atoms/error/Error";
 import { FinishIcon } from "@/shared/ui/atoms/finishIcon";
 import { HeadingText } from "@/shared/ui/atoms/headingText";
+import { NextButton } from "@/shared/ui/molecules/nextButton";
 import { RegistrationFormDataSchema } from "@/shared/model/registrationFormDataSchema";
 
-import { useAppDispatch } from "@/app/store";
-import { selectUser, signupUser } from "@/entities/user/model/userSlice";
-import { useSelector } from "react-redux";
+import styles from "./RegistrationForm.module.scss";
 
 type Inputs = z.infer<typeof RegistrationFormDataSchema>;
 
@@ -50,14 +45,14 @@ export const RegistrationForm = ({
     resolver: zodResolver(RegistrationFormDataSchema),
   });
 
-  const processForm: any = async (data: any) => {
-    const { password, email, name, weight, height } = data;
+  const processForm: SubmitHandler<Inputs> = async (data: Inputs) => {
+    const { password, email, fullName, weight, height } = data;
     try {
       await dispatch(
         signupUser({
           password: password,
           email: email,
-          fullName: name,
+          fullName: fullName,
           weight: weight,
           height: height,
         })
@@ -76,7 +71,7 @@ export const RegistrationForm = ({
   const handleNextStep = async () => {
     let fieldsToValidate: any;
     if (currentStep === 1) {
-      fieldsToValidate = ["name"];
+      fieldsToValidate = ["fullName"];
     } else if (currentStep === 2) {
       fieldsToValidate = ["weight", "height"];
     } else if (currentStep === 3) {
@@ -108,45 +103,41 @@ export const RegistrationForm = ({
               <Input
                 type="text"
                 placeholder="Имя"
-                register={register("name")}
-                isError={!!errors.name}
+                register={register("fullName")}
+                isError={!!errors.fullName}
               />
-              {errors.name && (
-                <span className={styles.error}>{errors.name.message}</span>
-              )}
+              <Error field={errors.fullName} />
             </div>
             <NextButton
               text="Далее"
               onClick={handleNextStep}
               icon={<NextIcon />}
-              isDisabled={!!errors.name}
+              isDisabled={!!errors.fullName}
             />
           </>
         )}
         {currentStep === 2 && (
           <>
             <HeadingText text="Какие Ваши параметры?" />
-            <div style={{ width: "100%" }}>
-              <Input
-                type="number"
-                placeholder="Вес"
-                register={register("weight")}
-                isError={!!errors.weight}
-              />
-              {errors.weight && (
-                <span className={styles.error}>{errors.weight.message}</span>
-              )}
-            </div>
-            <div style={{ width: "100%" }}>
-              <Input
-                type="number"
-                placeholder="Рост"
-                register={register("height")}
-                isError={!!errors.height}
-              />
-              {errors.height && (
-                <span className={styles.error}>{errors.height.message}</span>
-              )}
+            <div className={styles.registrationFormParamsWrapper}>
+              <div style={{ width: "100%" }}>
+                <Input
+                  type="number"
+                  placeholder="Вес"
+                  register={register("weight")}
+                  isError={!!errors.weight}
+                />
+                <Error field={errors.weight} />
+              </div>
+              <div style={{ width: "100%" }}>
+                <Input
+                  type="number"
+                  placeholder="Рост"
+                  register={register("height")}
+                  isError={!!errors.height}
+                />
+                <Error field={errors.height} />
+              </div>
             </div>
             <NextButton
               text="Далее"
@@ -166,9 +157,7 @@ export const RegistrationForm = ({
                 register={register("email")}
                 isError={!!errors.email}
               />
-              {errors.email && (
-                <span className={styles.error}>{errors.email.message}</span>
-              )}
+              <Error field={errors.email} />
             </div>
             <div style={{ width: "100%" }}>
               <Input
@@ -177,9 +166,7 @@ export const RegistrationForm = ({
                 register={register("password")}
                 isError={!!errors.password}
               />
-              {errors.password && (
-                <span className={styles.error}>{errors.password.message}</span>
-              )}
+              <Error field={errors.password} />
             </div>
             <div style={{ width: "100%" }}>
               <Input
@@ -188,11 +175,7 @@ export const RegistrationForm = ({
                 register={register("confirmPassword")}
                 isError={!!errors.confirmPassword}
               />
-              {errors.confirmPassword && (
-                <span className={styles.error}>
-                  {errors.confirmPassword.message}
-                </span>
-              )}
+              <Error field={errors.confirmPassword} />
             </div>
             <NextButton
               text="Завершить регистрацию"

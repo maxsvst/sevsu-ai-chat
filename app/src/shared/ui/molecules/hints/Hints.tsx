@@ -1,10 +1,11 @@
 "use client";
 
 import React, { ReactElement } from "react";
+import { useRouter } from "next/navigation";
+
+import { api } from "@/shared/api";
 
 import styles from "./hints.module.scss";
-import { api } from "@/shared/api";
-import { useRouter } from "next/navigation";
 
 export interface HintElement {
   id: number;

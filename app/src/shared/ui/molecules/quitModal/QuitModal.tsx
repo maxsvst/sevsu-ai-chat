@@ -1,32 +1,49 @@
-// "use client";
+"use client";
 
-// import React from "react";
-// // import styles from "./Modal.module.scss";
-// import { WithUserModal } from "@/entities/user/ui";
-// import { Input } from "../input";
-// import { CloseIcon } from "../../atoms/closeIcon";
+import React from "react";
 
-// const SettingsModal = ({
-//   settingsVisbilityHandler,
-// }: {
-//   settingsVisbilityHandler: any;
-// }) => {
-//   return (
-//     <div className={styles.settingsModalWrapper}>
-//       <CloseIcon clickHandler={() => settingsVisbilityHandler(false)} />
-//       <div className={styles.settingsModalTitle}>Настройки</div>
-//       <form className={styles.settingsModalForm}>
-//         <Input type="text" placeholder="Имя" />
-//         <Input type="text" placeholder="Имя" />
-//         <hr className={styles.settingsModalDivider} />
-//         <Input type="text" placeholder="Имя" />
-//         <Input type="text" placeholder="Имя" />
-//         <hr className={styles.settingsModalDivider} />
-//         <Input type="password" placeholder="Имя" />
-//       </form>
-//       <button className={styles.settingsModalSaveBtn}>Сохранить</button>
-//     </div>
-//   );
-// };
+import { useRouter } from "next/navigation";
 
-// export default WithUserModal(SettingsModal);
+import { WithModal } from "@/entities/user/ui";
+import { CloseIcon } from "../../atoms/closeIcon";
+
+import { logout } from "@/entities/user/model/userSlice";
+import { setQuitVisibility } from "@/entities/modal/model/modalSlice";
+import { useAppDispatch } from "@/app/store";
+
+import styles from "./QuitModal.module.scss";
+
+const QuitModal = () => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  return (
+    <div className={styles.quitModalWrapper}>
+      <CloseIcon clickHandler={() => dispatch(setQuitVisibility(false))} />
+      <div className={styles.quitModalTitle}>Выход</div>
+      <span className={styles.quitModalDesc}>
+        Вы действительно хотиты выйте из аккаунта?
+      </span>
+      <div className={styles.quitBtnWrapper}>
+        <button
+          className={styles.quitModalCancelBtn}
+          onClick={() => dispatch(setQuitVisibility(false))}
+        >
+          Отмена
+        </button>
+        <button
+          className={styles.quitModalLeaveBtn}
+          onClick={() => {
+            dispatch(setQuitVisibility(false));
+            dispatch(logout());
+            router.push("/");
+          }}
+        >
+          Выйти
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default WithModal(QuitModal, "quit");

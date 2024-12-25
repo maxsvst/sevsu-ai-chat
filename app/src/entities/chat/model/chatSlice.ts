@@ -68,6 +68,7 @@ export const createChatWithTitle = createAsyncThunk(
 export const deleteChat = createAsyncThunk(
   "chat/deleteChat",
   async (id: string, { rejectWithValue }) => {
+    console.log("delete id", id);
     try {
       await api.delete(`/chat/${id}`);
       return id;

@@ -1,21 +1,23 @@
 "use client";
 
-import React, { ReactElement, useEffect, useId, useRef, useState } from "react";
-import styles from "./ChatPicked.module.scss";
-import { SendIcon } from "@/shared/ui/atoms/sendIcon/SendIcon";
-import { useRouter } from "next/navigation";
-import { Header } from "@/shared/ui/molecules/header";
-import { api } from "@/shared/api";
-import { dateToHH_MM } from "@/shared/ui";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
+
 import { useSelector } from "react-redux";
+import { Spin } from "antd";
+
 import {
   fetchMessages,
   selectChats,
   sendMessage,
 } from "@/entities/chat/model/chatSlice";
 import { useAppDispatch } from "@/app/store";
-import { Spin } from "antd";
-import { selectModal } from "@/entities/modal/model/modalSlice";
+
+import { dateToHH_MM } from "@/shared/ui";
+import { Header } from "@/shared/ui/molecules/header";
+import { SendIcon } from "@/shared/ui/atoms/sendIcon/SendIcon";
+
+import styles from "./ChatPicked.module.scss";
+import { CopyIcon } from "@/shared/ui/atoms/copyIcon";
 
 export interface Message {
   id: number;
@@ -29,14 +31,14 @@ export const IconBuffer = ({ children }: { children: ReactElement }) => {
 };
 
 export const ChatPicked = ({ chatId }: { chatId: string }) => {
-  const { chats, isLoading } = useSelector(selectChats);
-  const { isSettingsVisible } = useSelector(selectModal);
   const dispatch = useAppDispatch();
-  const messages =
-    !!chats && chats?.find((chat) => chat.id === chatId)?.messages;
-  const [question, setQuestion] = useState("");
+  const { chats, isLoading } = useSelector(selectChats);
 
   const scrollElement = useRef<any>(null);
+  const [question, setQuestion] = useState("");
+
+  const messages =
+    !!chats && chats?.find((chat) => chat.id === chatId)?.messages;
 
   useEffect(() => {
     if (!!scrollElement.current) {
@@ -65,19 +67,32 @@ export const ChatPicked = ({ chatId }: { chatId: string }) => {
   return (
     <section className={styles.chatWrapper}>
       <Header />
-      <ul className={styles.chat} ref={scrollElement}>
-        {!!messages?.length &&
+      <ul
+        className={!!messages?.length ? styles.chat : styles.emptyChat}
+        ref={scrollElement}
+      >
+        {!!messages?.length ? (
           messages.map(({ id, createdAt, content, isAi }) => (
             <li
               key={id}
               className={isAi ? styles.chatAiMessage : styles.chatMessage}
             >
               <span style={{ fontSize: "14px" }}>{content}</span>
-              <span style={{ alignSelf: "end", fontSize: "12px" }}>
-                {dateToHH_MM(createdAt)}
-              </span>
+              <div
+                className={
+                  isAi ? styles.chatMessageMeta : styles.chatMessageTime
+                }
+              >
+                {isAi && <CopyIcon text={content} />}
+                <span style={{ alignSelf: "end", fontSize: "12px" }}>
+                  {dateToHH_MM(createdAt)}
+                </span>
+              </div>
             </li>
-          ))}
+          ))
+        ) : (
+          <div className={styles.emptyMessages}>Сообщения отсутствуют</div>
+        )}
       </ul>
       <div className={styles.inputWrapper}>
         <input
