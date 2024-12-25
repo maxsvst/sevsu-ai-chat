@@ -1,7 +1,14 @@
-.wrapper {
+.wrapper,
+.wrapperBlured {
   padding: 31px 24px;
   color: #ffffff;
   height: 100%;
+  filter: blur(0);
+  transition: filter 1s ease;
+}
+
+.wrapperBlured {
+  filter: blur(70px);
 }
 
 .sectionWrapper {

@@ -1,1 +1,1 @@
-export { checkSmth } from "./api/checkSmth";
+export { default as userReducer } from "./model/userSlice";

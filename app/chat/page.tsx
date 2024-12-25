@@ -1,6 +1,6 @@
-import { Chat } from "@/pages/chat";
+import { WelcomeChat } from "@/pages/welcomeChat";
 import React from "react";
 
 export default function ChatPage() {
-  return <Chat />;
+  return <WelcomeChat />;
 }

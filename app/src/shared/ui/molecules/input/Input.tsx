@@ -11,37 +11,43 @@ export const Input = ({
   text,
   register,
   placeholder,
+  isError,
+  onChangeHandler,
 }: {
   type: string;
-  text?: string;
+  text?: string | number;
   register?: UseFormRegisterReturn<FieldValues[keyof FieldValues]>;
   placeholder: string;
+  isError?: boolean;
+  onChangeHandler?: any;
 }) => {
-  const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+  const [isPasswordHidden, setIsPasswordHidden] = useState(false);
 
   return type === "password" ? (
-    <div className={styles.inputWrapper}>
+    <div className={isError ? styles.inputWrapperError : styles.inputWrapper}>
       <input
         className={styles.passInput}
         placeholder={placeholder}
-        type={isPasswordHidden ? "password" : "text"}
+        type={isPasswordHidden ? "text" : "password"}
         {...register}
         value={text}
+        onChange={onChangeHandler}
       />
       {isPasswordHidden ? (
-        <ShowPassIcon onClickHandler={setIsPasswordHidden} />
-      ) : (
         <HidePassIcon onClickHandler={setIsPasswordHidden} />
+      ) : (
+        <ShowPassIcon onClickHandler={setIsPasswordHidden} />
       )}
     </div>
   ) : (
-    <div className={styles.inputWrapper}>
+    <div className={isError ? styles.inputWrapperError : styles.inputWrapper}>
       <input
         className={styles.emailInput}
         placeholder={placeholder}
         {...register}
         value={text}
         type={type}
+        onChange={onChangeHandler}
       />
     </div>
   );

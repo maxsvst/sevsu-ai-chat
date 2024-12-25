@@ -1,142 +1,102 @@
 "use client";
 
-import { ProfileIcon } from "@/shared/ui/atoms/profileIcon";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useId, useRef, useState } from "react";
 import styles from "./ChatPicked.module.scss";
-import { HealthIconSmall } from "@/shared/ui/atoms/healthIconSmall";
 import { SendIcon } from "@/shared/ui/atoms/sendIcon/SendIcon";
-import { NextButton } from "@/shared/ui/molecules/nextButton";
-import { NewChatIcon } from "@/shared/ui/atoms/newChatIcon";
 import { useRouter } from "next/navigation";
 import { Header } from "@/shared/ui/molecules/header";
-
-export interface ChatElement {
-  id: number;
-  theme: string;
-  message: string;
-  time: string;
-}
+import { api } from "@/shared/api";
+import { dateToHH_MM } from "@/shared/ui";
+import { useSelector } from "react-redux";
+import {
+  fetchMessages,
+  selectChats,
+  sendMessage,
+} from "@/entities/chat/model/chatSlice";
+import { useAppDispatch } from "@/app/store";
+import { Spin } from "antd";
+import { selectModal } from "@/entities/modal/model/modalSlice";
 
 export interface Message {
   id: number;
-  type: "IN" | "OUT";
-  text: string;
-  time: string;
+  isAi: boolean;
+  content: string;
+  createdAt: string;
 }
 
 export const IconBuffer = ({ children }: { children: ReactElement }) => {
   return <>{children}</>;
 };
 
-export const ChatPicked = () => {
-  const chatsArray: ChatElement[] = [
-    {
-      id: 0,
-      theme: "Тема чата",
-      message: "Сообщение",
-      time: "10:00",
-    },
-  ];
+export const ChatPicked = ({ chatId }: { chatId: string }) => {
+  const { chats, isLoading } = useSelector(selectChats);
+  const { isSettingsVisible } = useSelector(selectModal);
+  const dispatch = useAppDispatch();
+  const messages =
+    !!chats && chats?.find((chat) => chat.id === chatId)?.messages;
+  const [question, setQuestion] = useState("");
 
-  const messagesArray: Message[] = [
-    {
-      id: 0,
-      type: "IN",
-      text: "qwerqwerqwQWEQWEQWEQWWWWWWWWWWerwq",
-      time: "10:00",
-    },
-    {
-      id: 1,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 2,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 3,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 4,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 5,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 6,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 6,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 6,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-    {
-      id: 6,
-      type: "OUT",
-      text: "qwerqwerqwerwq",
-      time: "10:00",
-    },
-  ];
+  const scrollElement = useRef<any>(null);
 
-  const router = useRouter();
+  useEffect(() => {
+    if (!!scrollElement.current) {
+      scrollElement.current!.scrollTo({
+        top: scrollElement.current!.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    !!chatId && dispatch(fetchMessages(chatId)).unwrap();
+  }, [dispatch, chatId]);
+
+  const sendMessageHandler = async () => {
+    try {
+      await dispatch(sendMessage({ chatId, question })).unwrap();
+      setQuestion("");
+    } catch (error) {
+      console.error("Failed to send message", error);
+    }
+  };
+
+  // console.log("messages", messages);
 
   return (
-    <div className={styles.wrapper}>
-      <section className={styles.chatSectionWrapper}>
-        <ul className={styles.chatListWrapper}>
-          {chatsArray.map(({ id, theme, message, time }) => (
-            <li key={id} className={styles.chatItemWrapper}>
-              <div className={styles.chatItem}>
-                <span>{theme}</span>
-                <span style={{ fontSize: "12px" }}>{message}</span>
-              </div>
-              <span style={{ fontSize: "12px" }}>{time}</span>
+    <section className={styles.chatWrapper}>
+      <Header />
+      <ul className={styles.chat} ref={scrollElement}>
+        {!!messages?.length &&
+          messages.map(({ id, createdAt, content, isAi }) => (
+            <li
+              key={id}
+              className={isAi ? styles.chatAiMessage : styles.chatMessage}
+            >
+              <span style={{ fontSize: "14px" }}>{content}</span>
+              <span style={{ alignSelf: "end", fontSize: "12px" }}>
+                {dateToHH_MM(createdAt)}
+              </span>
             </li>
           ))}
-        </ul>
-        <NextButton text="Новый чат" icon={<NewChatIcon />} />
-      </section>
-      <section className={styles.chatWrapper}>
-        <Header />
-        <ul className={styles.chat}>
-          {messagesArray.map(({ id, type, text, time }) => (
-            <li key={id} className={styles.chatMessage}>
-              <span style={{ fontSize: "14px" }}>{text}</span>
-              <span style={{ alignSelf: "end", fontSize: "12px" }}>{time}</span>
-            </li>
-          ))}
-        </ul>
-        <div className={styles.inputWrapper}>
-          <input
-            className={styles.searchInput}
-            placeholder="Напишите запрос..."
+      </ul>
+      <div className={styles.inputWrapper}>
+        <input
+          className={styles.searchInput}
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Напишите запрос..."
+        />
+        {isLoading ? (
+          <Spin style={{ marginRight: "5px" }} />
+        ) : (
+          <SendIcon
+            style={!question.length && { cursor: "not-allowed" }}
+            onClickHandler={() => {
+              !!question.length && sendMessageHandler();
+            }}
           />
-          <SendIcon onClickHandler={() => router.push("/")} />
-        </div>
-      </section>
-    </div>
+        )}
+      </div>
+    </section>
   );
 };

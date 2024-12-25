@@ -1,0 +1,1 @@
+export { SmallProfileIcon } from "./SmallProfile";

@@ -1,0 +1,1 @@
+export { QuitIcon } from "./QuitIcon";

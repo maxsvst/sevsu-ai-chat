@@ -1,6 +1,10 @@
+"use client";
+
 import React, { ReactElement } from "react";
 
 import styles from "./hints.module.scss";
+import { api } from "@/shared/api";
+import { useRouter } from "next/navigation";
 
 export interface HintElement {
   id: number;
@@ -120,10 +124,23 @@ export const IconBuffer = ({ children }: { children: ReactElement }) => {
 };
 
 export const Hints = () => {
+  const router = useRouter();
+
+  const clickHandler = async (message: string) => {
+    const chat = await api.post("/chat", JSON.stringify({ title: message }));
+    await api.get(`/ai/get-mock-answer/${chat.id}/${message}`);
+    await api.get("/chat");
+    router.push(`/chatPicked/${chat.id}`);
+  };
+
   return (
     <ul className={styles.listWrapper}>
       {hintArray.map(({ id, text, Icon }: HintElement) => (
-        <li key={id} className={styles.listItem}>
+        <li
+          key={id}
+          className={styles.listItem}
+          onClick={() => clickHandler(text)}
+        >
           <IconBuffer children={Icon} />
           {text}
         </li>

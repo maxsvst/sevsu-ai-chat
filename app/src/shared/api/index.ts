@@ -1,15 +1,17 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL; // NEXT_PUBLIC_, чтобы переменную среды было видно в клиентском компоненте
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export enum HtttpMethod {
   GET = "GET",
   POST = "POST",
   PUT = "PUT",
+  PATCH = "PATCH",
+  DELETE = "DELETE",
 }
 
 type FetchOptions = {
   url: string;
   method: HtttpMethod;
-  body?: BodyInit | null;
+  body?: any;
   tags?: string[];
   revalidateTime?: number;
 };
@@ -25,6 +27,9 @@ export interface RefreshApiResponse extends ApiResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+let isRefreshing = false;
+let pendingRequests: (() => Promise<any>)[] = [];
 
 const fetchFunction = async ({
   url,
@@ -43,11 +48,12 @@ const fetchFunction = async ({
     body,
     headers: {
       "Content-Type": "application/json",
-      // Authorization:
-      //   url === "/auth/refresh"
-      //     ? `Refresh ${refreshToken}`
-      //     : `Bearer ${accessToken}`,
+      Authorization:
+        url === "/auth/refresh"
+          ? `Refresh ${refreshToken}`
+          : `Bearer ${accessToken}`,
     },
+    mode: 'cors'
     // next: {
     //   tags,
     //   ...(revalidateTime && { revalidate: revalidateTime }),
@@ -62,7 +68,7 @@ export const api = {
     body,
     tags,
     revalidateTime,
-  }: FetchOptions): Promise<ApiResponse> => {
+  }: FetchOptions): Promise<any> => {
     const res = await fetchFunction({
       url,
       method,
@@ -72,19 +78,39 @@ export const api = {
     });
 
     const json = await res.json();
-    console.log(res);
     res.status > 210 && console.error(`ERROR ${method} url: ${url}`, json);
 
-    // if (json.statusCode === 401) {
-    //   const refresh = (await api.post("/auth/refresh")) as RefreshApiResponse;
-    //   console.log("до", refresh);
-    //   localStorage.setItem("accessToken", refresh.accessToken);
-    //   localStorage.setItem("refreshToken", refresh.refreshToken);
-    //   console.log("после", refresh);
-    //   method === HtttpMethod.GET
-    //     ? await api.get(url)
-    //     : await api.post(url, body!);
-    // }
+    if (json.statusCode === 401) {
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          pendingRequests.push(() =>
+            api
+              .request({ url, method, body, tags, revalidateTime })
+              .then(resolve)
+          );
+        });
+      }
+
+      isRefreshing = true;
+
+      try {
+        const refresh = (await api.post("/auth/refresh")) as RefreshApiResponse;
+        const oldAccessToken = localStorage.getItem("accessToken");
+        localStorage.setItem("accessToken", refresh.accessToken);
+        localStorage.setItem("refreshToken", refresh.refreshToken);
+        const accessToken = localStorage.getItem("accessToken");
+        if (oldAccessToken !== accessToken) {
+          pendingRequests.push(() =>
+            api.request({ url, method, body, tags, revalidateTime })
+          );
+          const requests = pendingRequests.map((callback) => callback());
+          pendingRequests = [];
+          return Promise.all(requests);
+        }
+      } finally {
+        isRefreshing = false;
+      }
+    }
 
     return json;
   },
@@ -96,18 +122,31 @@ export const api = {
       revalidateTime,
     });
   },
-  post: async (url: string, body?: BodyInit) => {
+  post: async (url: string, body?: any) => {
     return await api.request({
       method: HtttpMethod.POST,
       url,
       body,
     });
   },
-  put: async (url: string, body?: BodyInit) => {
+  put: async (url: string, body?: any) => {
     return await api.request({
       method: HtttpMethod.PUT,
       url,
       body,
+    });
+  },
+  patch: async (url: string, body?: any) => {
+    return await api.request({
+      method: HtttpMethod.PATCH,
+      url,
+      body,
+    });
+  },
+  delete: async (url: string) => {
+    return await api.request({
+      method: HtttpMethod.DELETE,
+      url,
     });
   },
 };

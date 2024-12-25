@@ -5,21 +5,23 @@ import styles from "./NextButton.module.scss";
 
 export interface NextButtonProps {
   text: string;
-  onClickHandler?: MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   type?: "button" | "submit" | "reset" | undefined;
   icon: ReactElement;
+  isDisabled?: boolean;
 }
 
 export const NextButton = ({
   text,
-  onClickHandler,
+  onClick,
   type,
   icon,
+  isDisabled,
 }: NextButtonProps) => {
   return (
     <button
-      className={styles.btnWrapper}
-      onClick={onClickHandler && onClickHandler}
+      className={isDisabled ? styles.btnWrapperDisabled : styles.btnWrapper}
+      onClick={onClick}
       type={!!type ? type : "button"}
     >
       <div style={{ width: "32px", height: "32px" }} />

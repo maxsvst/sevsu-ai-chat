@@ -9,3 +9,38 @@
   gap: 16px;
   cursor: pointer;
 }
+
+.headerItemWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.menuModal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px;
+  gap: 8px;
+  position: absolute;
+  top: 55px;
+  right: 15px;
+  width: 186px;
+  height: 151px;
+  border-radius: 8px;
+  background-color: #262626;
+}
+
+.menuItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 8px 0 8px 8px;
+  transition: background-color 0.25s ease-in;
+  // transition: background-color 0.2s ease-in;
+
+  &:hover {
+    background-color: #373737;
+  }
+}

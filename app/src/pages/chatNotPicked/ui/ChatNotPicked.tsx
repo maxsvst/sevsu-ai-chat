@@ -169,41 +169,42 @@ export const ChatNotPicked = () => {
   const router = useRouter();
 
   return (
-    <div className={styles.wrapper}>
-      <section className={styles.chatSectionWrapper}>
-        <ul className={styles.chatListWrapper}>
-          {chatsArray.map(({ id, theme, message, time }) => (
-            <li key={id} className={styles.chatItemWrapper}>
-              <div className={styles.chatItem}>
-                <span>{theme}</span>
-                <span style={{ fontSize: "12px" }}>{message}</span>
-              </div>
-              <span style={{ fontSize: "12px" }}>{time}</span>
-            </li>
-          ))}
-        </ul>
-        <NextButton text="Новый чат" icon={<NewChatIcon />} />
-      </section>
-      <section className={styles.sectionWrapper}>
-        <article className={styles.sectionArticle}>
-          Чем я могу Вам помочь?
-        </article>
-        <ul className={styles.listWrapper}>
-          {hintArray.map(({ id, text, Icon }: HintElement) => (
-            <li key={id} className={styles.listItem}>
-              <IconBuffer children={Icon} />
-              {text}
-            </li>
-          ))}
-        </ul>
-        <div className={styles.inputWrapper}>
-          <input
-            className={styles.searchInput}
-            placeholder="Напишите запрос..."
-          />
-          <SendIcon onClickHandler={() => router.push("/chatPicked")} />
-        </div>
-      </section>
-    </div>
+    <></>
+    // <div className={styles.wrapper}>
+    //   <section className={styles.chatSectionWrapper}>
+    //     <ul className={styles.chatListWrapper}>
+    //       {chatsArray.map(({ id, theme, message, time }) => (
+    //         <li key={id} className={styles.chatItemWrapper}>
+    //           <div className={styles.chatItem}>
+    //             <span>{theme}</span>
+    //             <span style={{ fontSize: "12px" }}>{message}</span>
+    //           </div>
+    //           <span style={{ fontSize: "12px" }}>{time}</span>
+    //         </li>
+    //       ))}
+    //     </ul>
+    //     <NextButton text="Новый чат" icon={<NewChatIcon />} />
+    //   </section>
+    //   <section className={styles.sectionWrapper}>
+    //     <article className={styles.sectionArticle}>
+    //       Чем я могу Вам помочь?
+    //     </article>
+    //     <ul className={styles.listWrapper}>
+    //       {hintArray.map(({ id, text, Icon }: HintElement) => (
+    //         <li key={id} className={styles.listItem}>
+    //           <IconBuffer children={Icon} />
+    //           {text}
+    //         </li>
+    //       ))}
+    //     </ul>
+    //     <div className={styles.inputWrapper}>
+    //       <input
+    //         className={styles.searchInput}
+    //         placeholder="Напишите запрос..."
+    //       />
+    //       <SendIcon onClickHandler={() => router.push("/chatPicked")} />
+    //     </div>
+    //   </section>
+    // </div>
   );
 };

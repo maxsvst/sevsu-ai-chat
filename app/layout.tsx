@@ -1,7 +1,10 @@
+"use client";
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
+import ReduxProvider from "@/app/providers";
 
 const ptsansFont = localFont({
   src: [
@@ -19,7 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={ptsansFont.className}>
-      <body>{children}</body>
+      <body>
+        <ReduxProvider>
+          <div id="settings" />
+          {children}
+        </ReduxProvider>
+      </body>
     </html>
   );
 }

@@ -28,6 +28,11 @@
   width: 100%;
 }
 
+.error {
+  color: red;
+  margin-left: 15px;
+}
+
 @media (min-width: 564px) {
   .registrationForm {
     width: 500px;

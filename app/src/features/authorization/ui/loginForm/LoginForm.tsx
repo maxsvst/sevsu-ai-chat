@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./LoginForm.module.scss";
 
 import { Input } from "@/shared/ui/molecules/input";
@@ -10,6 +10,12 @@ import { NextButton } from "@/shared/ui/molecules/nextButton";
 import { NextIcon } from "@/shared/ui/atoms/nextIcon";
 import { HeadingText } from "@/shared/ui/atoms/headingText";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginFormDataSchema } from "@/shared/model/loginDataSchema";
+import { useAppDispatch } from "@/app/store";
+import { getChats, selectChats } from "@/entities/chat/model/chatSlice";
+import { loginUser } from "@/entities/user/model/userSlice";
+import { useSelector } from "react-redux";
 
 interface LoginResDto extends ApiResponse {
   backendTokens: {
@@ -19,52 +25,72 @@ interface LoginResDto extends ApiResponse {
 }
 
 interface LoginReqDto {
-  username: string;
+  email: string;
   password: string;
 }
 
 export const LoginForm = () => {
   const router = useRouter();
 
+  const dispatch = useAppDispatch();
+  const { chats } = useSelector(selectChats);
+
+  useEffect(() => {
+    (async () => await dispatch(getChats()).unwrap())();
+  }, [dispatch]);
+
   const {
     register,
-    reset,
     handleSubmit,
-    // formState: { errors },
-  } = useForm({
-    // resolver: zodResolver(FormDataSchema),
+    formState: { errors },
+  } = useForm<LoginReqDto>({
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+    resolver: zodResolver(LoginFormDataSchema),
   });
 
-  const processForm: SubmitHandler<FieldValues> = async (data) => {
-    const res = (await api.post(
-      "/auth/login",
-      JSON.stringify(data)
-    )) as LoginResDto;
+  const processForm: SubmitHandler<LoginReqDto> = async (
+    credentials: LoginReqDto
+  ) => {
+    try {
+      await dispatch(loginUser(credentials)).unwrap();
+      await dispatch(getChats()).unwrap();
 
-    // router.push("/chat");
-
-    const res1 = await api.get("/users/all");
-
-    if (res.backendTokens) {
-      localStorage.setItem("accessToken", res.backendTokens.accessToken);
-      localStorage.setItem("refreshToken", res.backendTokens.refreshToken);
-      router.push("/chat");
+      if (chats.length) {
+        router.push(`/chatPicked/${chats[0].id}`);
+      } else {
+        router.push("/chat");
+      }
+    } catch (error) {
+      console.error("Login failed", error);
     }
-
-    // const res1 = await api.get("/auth/me");
-
-    // console.log(res1.result);
   };
 
   return (
     <form className={styles.loginForm} onSubmit={handleSubmit(processForm)}>
       <HeadingText text="Вход" />
-      <Input type="text" register={register("username")} placeholder="E-mail" />
-      <Input
-        type="password"
-        register={register("password")}
-        placeholder="Пароль"
-      />
+      <div style={{ width: "100%" }}>
+        <Input
+          type="text"
+          register={register("email")}
+          placeholder="E-mail"
+          isError={!!errors.email}
+        />
+        {errors.email && (
+          <span className={styles.error}>{errors.email.message}</span>
+        )}
+      </div>
+      <div style={{ width: "100%" }}>
+        <Input
+          type="password"
+          register={register("password")}
+          placeholder="Пароль"
+          isError={!!errors.password}
+        />
+        {errors.password && (
+          <span className={styles.error}>{errors.password.message}</span>
+        )}
+      </div>
       <NextButton text="Войти" type="submit" icon={<NextIcon />} />
     </form>
   );

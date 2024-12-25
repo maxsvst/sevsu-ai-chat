@@ -9,7 +9,7 @@ export const HidePassIcon = ({
   return (
     <svg
       className={styles.icon}
-      onClick={() => onClickHandler(true)}
+      onClick={() => onClickHandler(false)}
       width="24"
       height="25"
       viewBox="0 0 24 25"

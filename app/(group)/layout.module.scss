@@ -1,0 +1,57 @@
+.wrapper,
+.wrapperBlured {
+  padding: 16px;
+  color: #ffffff;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  filter: blur(0);
+  transition: filter 1s ease;
+}
+
+.wrapperBlured {
+  filter: blur(70px);
+}
+
+.chatSectionWrapper {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  overflow-y: auto;
+  cursor: pointer;
+  gap: 8px;
+}
+
+.chatListWrapper {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+}
+
+.chatItemWrapper,
+.chatItemWrapperPicked {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 16px;
+  border: 0;
+  transition: border 2s ease;
+}
+
+.chatItemWrapperPicked {
+  border: 1px solid rgba(22, 175, 27, 1);
+}
+
+.chatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

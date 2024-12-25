@@ -1,4 +1,5 @@
-.btnWrapper {
+.btnWrapper,
+.btnWrapperDisabled {
   background: #ffffff;
   border-radius: 100px;
   display: flex;
@@ -8,4 +9,9 @@
   width: 100%;
   padding: 4px;
   cursor: pointer;
+}
+
+.btnWrapperDisabled {
+  background: gray;
+  cursor: not-allowed;
 }
