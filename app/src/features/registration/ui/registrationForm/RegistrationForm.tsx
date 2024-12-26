@@ -56,7 +56,7 @@ export const RegistrationForm = ({
           weight: weight,
           height: height,
         })
-      );
+      ).unwrap();
 
       if (id) {
         router.push("/authorization");

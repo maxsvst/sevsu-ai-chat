@@ -33,7 +33,7 @@ const SettingsModal = () => {
   } = useForm<Inputs>({
     mode: "onBlur",
     reValidateMode: "onBlur",
-    resolver: zodResolver(EditProfileFormDataSchema.partial()),
+    // resolver: zodResolver(EditProfileFormDataSchema),
   });
 
   // console.log(fullName, email, weight, height);
@@ -64,7 +64,7 @@ const SettingsModal = () => {
       payload.password = password;
     }
 
-    await dispatch(editUser(payload));
+    await dispatch(editUser(payload)).unwrap();
     dispatch(setSettingsVisibility(false));
   };
 

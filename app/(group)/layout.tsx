@@ -61,8 +61,8 @@ export default function ChatsLayout({
     }
   };
 
-  const removeChat = (id: string) => {
-    dispatch(deleteChat(id));
+  const removeChat = async (id: string) => {
+    await dispatch(deleteChat(id)).unwrap();
   };
 
   const isBlur = isSettingsVisible || isProfileVisible || isQuitVisible;

@@ -127,7 +127,7 @@ const chatReducer = createSlice({
         deleteChat.fulfilled,
         (state: any, action: PayloadAction<string>) => {
           state.chats = state.chats.filter(
-            (chat: any) => chat.chatId !== action.payload
+            (chat: any) => chat.id !== action.payload
           );
         }
       ),

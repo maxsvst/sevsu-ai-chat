@@ -1,3 +1,5 @@
+import {redirect} from "next/navigation";
+
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export enum HtttpMethod {
@@ -28,9 +30,6 @@ export interface RefreshApiResponse extends ApiResponse {
   refreshToken: string;
 }
 
-let isRefreshing = false;
-let pendingRequests: (() => Promise<any>)[] = [];
-
 const fetchFunction = async ({
   url,
   method,
@@ -41,17 +40,13 @@ const fetchFunction = async ({
   const requestUrl = API_URL + url;
 
   const accessToken = localStorage.getItem("accessToken");
-  const refreshToken = localStorage.getItem("refreshToken");
 
   return await fetch(requestUrl, {
     method,
     body,
     headers: {
       "Content-Type": "application/json",
-      Authorization:
-        url === "/auth/refresh"
-          ? `Refresh ${refreshToken}`
-          : `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     mode: 'cors'
     // next: {
@@ -69,7 +64,7 @@ export const api = {
     tags,
     revalidateTime,
   }: FetchOptions): Promise<any> => {
-    const res = await fetchFunction({
+    let res = await fetchFunction({
       url,
       method,
       body,
@@ -77,38 +72,24 @@ export const api = {
       revalidateTime,
     });
 
-    const json = await res.json();
+    let json = await res.json();
     res.status > 210 && console.error(`ERROR ${method} url: ${url}`, json);
 
     if (json.statusCode === 401) {
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          pendingRequests.push(() =>
-            api
-              .request({ url, method, body, tags, revalidateTime })
-              .then(resolve)
-          );
-        });
-      }
-
-      isRefreshing = true;
-
       try {
-        const refresh = (await api.post("/auth/refresh")) as RefreshApiResponse;
-        const oldAccessToken = localStorage.getItem("accessToken");
-        localStorage.setItem("accessToken", refresh.accessToken);
-        localStorage.setItem("refreshToken", refresh.refreshToken);
-        const accessToken = localStorage.getItem("accessToken");
-        if (oldAccessToken !== accessToken) {
-          pendingRequests.push(() =>
-            api.request({ url, method, body, tags, revalidateTime })
-          );
-          const requests = pendingRequests.map((callback) => callback());
-          pendingRequests = [];
-          return Promise.all(requests);
-        }
-      } finally {
-        isRefreshing = false;
+        await refreshToken()
+
+        res = await fetchFunction({
+          url,
+          method,
+          body,
+          tags,
+          revalidateTime,
+        });
+
+        json = await res.json();
+      } catch (error) {
+        console.error("ERROR Refresh token", error);
       }
     }
 
@@ -150,3 +131,32 @@ export const api = {
     });
   },
 };
+
+async function refreshToken() {
+  try {
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    const res = (await fetch(API_URL + "/auth/refresh", {
+      method: "POST",
+      headers: {
+        authorization: `Refresh ${refreshToken}`,
+      },
+      cache: "no-cache",
+    }));
+
+    const response = (await res.json()) as RefreshApiResponse;
+
+    if (response.status) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      console.error("ERROR Refresh token", response);
+      redirect("/authorization");
+      return;
+    }
+
+    localStorage.setItem("accessToken", response.accessToken);
+    localStorage.setItem("refreshToken", response.refreshToken)
+  } catch (e) {
+    console.error(e);
+  }
+}

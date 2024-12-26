@@ -10,10 +10,10 @@ export const EditProfileFormDataSchema = z.object({
     .optional(),
   height: z
     .string()
+    .optional()
     .transform(Number)
     .refine((val) => !isNaN(val), "Значение должно быть числом")
-    .refine((val) => val >= 0, "Некорректное значение")
-    .optional(),
+    .refine((val) => val >= 0, "Некорректное значение"),
   email: z
     .string()
     .min(1, "Введите e-mail")
@@ -36,5 +36,5 @@ export const EditProfileFormDataSchema = z.object({
       /(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-])/,
       "Пароль должен содержать как минимум один спецсимвол"
     )
-    .optional(),
+    .optional()
 });
