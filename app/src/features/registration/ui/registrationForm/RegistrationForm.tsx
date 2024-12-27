@@ -49,7 +49,7 @@ export const RegistrationForm = ({
     const { password, email, fullName, weight, height } = data;
     try {
       // TODO Не перенаправляет на логин, если токен стух
-      await dispatch(
+      const user = await dispatch(
         signupUser({
           password: password,
           email: email,
@@ -59,7 +59,7 @@ export const RegistrationForm = ({
         })
       ).unwrap();
 
-      if (id) {
+      if (user.id) {
         router.push("/authorization");
       } else {
         console.error("Ошибка при регистрации: не получен id");
