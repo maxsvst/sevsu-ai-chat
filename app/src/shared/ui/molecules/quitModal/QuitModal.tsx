@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { WithModal } from "@/entities/user/ui";
 import { CloseIcon } from "../../atoms/closeIcon";
 
-import { logout } from "@/entities/user/model/userSlice";
+import { resetChat } from "@/entities/chat/model/chatSlice";
+import { logout, resetUser } from "@/entities/user/model/userSlice";
 import { setQuitVisibility } from "@/entities/modal/model/modalSlice";
 import { useAppDispatch } from "@/app/store";
 
@@ -36,6 +37,8 @@ const QuitModal = () => {
           onClick={() => {
             dispatch(setQuitVisibility(false));
             dispatch(logout());
+            dispatch(resetUser());
+            dispatch(resetChat());
             router.push("/");
           }}
         >

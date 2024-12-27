@@ -31,8 +31,6 @@ export const LoginForm = () => {
   const { chats } = useSelector(selectChats);
   const status = useSelector(selectStatus);
 
-  console.log(status);
-
   useEffect(() => {
     (async () => await dispatch(getChats()).unwrap())();
   }, [dispatch]);
@@ -51,6 +49,8 @@ export const LoginForm = () => {
     try {
       await dispatch(loginUser(credentials)).unwrap();
       await dispatch(getChats()).unwrap();
+
+      // console.log(chats);
 
       if (chats.length) {
         router.push(`/chatPicked/${chats[0].id}`);

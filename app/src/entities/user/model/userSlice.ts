@@ -106,6 +106,9 @@ const userReducer = createSlice({
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
     },
+    resetUser: (state) => {
+      Object.assign(state, initialState);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
@@ -130,6 +133,6 @@ const userReducer = createSlice({
 export const selectUser = (state: RootState) => state.user.user;
 export const selectStatus = (state: RootState) => state.user.status;
 
-export const { logout } = userReducer.actions;
+export const { logout, resetUser } = userReducer.actions;
 
 export default userReducer.reducer;

@@ -4,23 +4,32 @@ import React, { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { api } from "@/shared/api";
 import { SendIcon } from "../../atoms/sendIcon";
+
+import {
+  createChatWithTitle,
+  getChats,
+  sendMessage,
+} from "@/entities/chat/model/chatSlice";
+import { useAppDispatch } from "@/app/store";
 
 import styles from "./SearchInput.module.scss";
 
 export const SearchInput = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [message, setMessage] = useState("");
 
   const clickHandler = async () => {
-    const chat = await api.post("/chat", JSON.stringify({ title: message }));
-    const messageRes = await api.get(
-      `/ai/get-mock-answer/${chat.id}/${message}`
-    );
-    const chats = await api.get("/chat");
-    router.push(`/chatPicked/${chat.id}`);
+    if (!!message) {
+      const chat = await dispatch(createChatWithTitle(message)).unwrap();
+      await dispatch(
+        sendMessage({ chatId: chat.id, question: message })
+      ).unwrap();
+      await dispatch(getChats()).unwrap();
+      router.push(`/chatPicked/${chat.id}`);
+    }
   };
 
   return (

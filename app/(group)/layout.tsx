@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { truncate } from "lodash";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import {
   createChat,
@@ -27,6 +27,7 @@ export default function ChatsLayout({
   children: React.ReactNode;
 }>) {
   const dispatch = useAppDispatch();
+  const path = usePathname();
 
   const { chats } = useSelector(selectChats);
   const { isSettingsVisible, isProfileVisible, isQuitVisible } =
@@ -35,6 +36,10 @@ export default function ChatsLayout({
   // console.log("chats", chats);
 
   const [chatId, setChatId] = useState<string>("");
+
+  useEffect(() => {
+    setChatId(path.split("/").at(-1)!);
+  }, [path]);
 
   const scrollElement = useRef<any>(null);
 
@@ -46,8 +51,8 @@ export default function ChatsLayout({
   }
 
   useEffect(() => {
-    dispatch(getChats());
-  }, []);
+    (async () => await dispatch(getChats()).unwrap())();
+  }, [dispatch]);
 
   const router = useRouter();
 
@@ -62,6 +67,7 @@ export default function ChatsLayout({
   };
 
   const removeChat = async (id: string) => {
+    !!chats.length && router.push(`/chatPicked/${chats.at(-1)!.id}`);
     await dispatch(deleteChat(id)).unwrap();
   };
 
@@ -104,8 +110,9 @@ export default function ChatsLayout({
                 <div
                   style={{
                     display: "flex",
+                    height: "100%",
                     flexDirection: "column",
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     alignItems: "end",
                     gap: "8px",
                   }}

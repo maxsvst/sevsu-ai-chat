@@ -33,16 +33,16 @@ const SettingsModal = () => {
   } = useForm<Inputs>({
     mode: "onBlur",
     reValidateMode: "onBlur",
-    // resolver: zodResolver(EditProfileFormDataSchema),
+    // resolver: zodResolver(EditProfileFormDataSchema.optional()),
   });
 
   // console.log(fullName, email, weight, height);
 
   useEffect(() => {
-    dispatch(getUser());
+    (async () => await dispatch(getUser()).unwrap())();
   }, []);
 
-  console.log("errors", errors);
+  // console.log("errors", errors);
 
   const processForm: SubmitHandler<Inputs> = async (data: Inputs) => {
     const { fullName, email, weight, height, password } = data;

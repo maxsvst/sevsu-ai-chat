@@ -19,7 +19,7 @@ const ProfileModal = () => {
   const { fullName, email, weight, height } = useSelector(selectUser);
 
   useEffect(() => {
-    dispatch(getUser());
+    (async () => await dispatch(getUser()).unwrap())();
   }, []);
 
   return (

@@ -3,13 +3,19 @@
 import React, { ReactElement } from "react";
 import { useRouter } from "next/navigation";
 
-import { api } from "@/shared/api";
+import {
+  createChatWithTitle,
+  getChats,
+  sendMessage,
+} from "@/entities/chat/model/chatSlice";
+import { useAppDispatch } from "@/app/store";
 
 import styles from "./hints.module.scss";
 
 export interface HintElement {
   id: number;
   text: string;
+  message: string;
   Icon: ReactElement;
 }
 
@@ -17,6 +23,7 @@ const hintArray: HintElement[] = [
   {
     id: 0,
     text: "План питания",
+    message: "Give me meal plan",
     Icon: (
       <svg
         width="16"
@@ -35,6 +42,7 @@ const hintArray: HintElement[] = [
   {
     id: 1,
     text: "План тренировок",
+    message: "Give me a training plan",
     Icon: (
       <svg
         width="16"
@@ -61,6 +69,7 @@ const hintArray: HintElement[] = [
   {
     id: 2,
     text: "Советы по здоровью",
+    message: "Give me some health tips",
     Icon: (
       <svg
         width="16"
@@ -89,6 +98,7 @@ const hintArray: HintElement[] = [
   {
     id: 3,
     text: "Чеклисты привычек",
+    message: "Give me the habit checklists",
     Icon: (
       <svg
         width="16"
@@ -126,21 +136,24 @@ export const IconBuffer = ({ children }: { children: ReactElement }) => {
 
 export const Hints = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const clickHandler = async (message: string) => {
-    const chat = await api.post("/chat", JSON.stringify({ title: message }));
-    await api.get(`/ai/get-mock-answer/${chat.id}/${message}`);
-    await api.get("/chat");
+    const chat = await dispatch(createChatWithTitle(message)).unwrap();
+    await dispatch(
+      sendMessage({ chatId: chat.id, question: message })
+    ).unwrap();
+    await dispatch(getChats()).unwrap();
     router.push(`/chatPicked/${chat.id}`);
   };
 
   return (
     <ul className={styles.listWrapper}>
-      {hintArray.map(({ id, text, Icon }: HintElement) => (
+      {hintArray.map(({ id, text, message, Icon }: HintElement) => (
         <li
           key={id}
           className={styles.listItem}
-          onClick={() => clickHandler(text)}
+          onClick={() => clickHandler(message)}
         >
           <IconBuffer children={Icon} />
           {text}

@@ -48,6 +48,7 @@ export const RegistrationForm = ({
   const processForm: SubmitHandler<Inputs> = async (data: Inputs) => {
     const { password, email, fullName, weight, height } = data;
     try {
+      // TODO Не перенаправляет на логин, если токен стух
       await dispatch(
         signupUser({
           password: password,

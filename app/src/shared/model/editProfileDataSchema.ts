@@ -4,14 +4,14 @@ export const EditProfileFormDataSchema = z.object({
   fullName: z.string().min(1, "Введите имя").optional(),
   weight: z
     .string()
-    .transform(Number)
+    .transform((val) => (val === "" ? NaN : Number(val)))
     .refine((val) => !isNaN(val), "Значение должно быть числом")
     .refine((val) => val >= 0, "Некорректное значение")
     .optional(),
   height: z
     .string()
     .optional()
-    .transform(Number)
+    .transform((val) => (val === "" ? NaN : Number(val)))
     .refine((val) => !isNaN(val), "Значение должно быть числом")
     .refine((val) => val >= 0, "Некорректное значение"),
   email: z
@@ -36,5 +36,5 @@ export const EditProfileFormDataSchema = z.object({
       /(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-])/,
       "Пароль должен содержать как минимум один спецсимвол"
     )
-    .optional()
+    .optional(),
 });

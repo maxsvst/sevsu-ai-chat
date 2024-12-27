@@ -54,7 +54,7 @@ export const createChat = createAsyncThunk(
 );
 
 export const createChatWithTitle = createAsyncThunk(
-  "chat/createChat",
+  "chat/createChatWithTitle",
   async (message: string, { rejectWithValue }) => {
     try {
       const data = await api.post("/chat", JSON.stringify({ title: message }));
@@ -68,7 +68,6 @@ export const createChatWithTitle = createAsyncThunk(
 export const deleteChat = createAsyncThunk(
   "chat/deleteChat",
   async (id: string, { rejectWithValue }) => {
-    console.log("delete id", id);
     try {
       await api.delete(`/chat/${id}`);
       return id;
@@ -109,7 +108,11 @@ export const fetchMessages = createAsyncThunk(
 const chatReducer = createSlice({
   name: "chat",
   initialState,
-  reducers: {},
+  reducers: {
+    resetChat: (state) => {
+      Object.assign(state, initialState);
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       getChats.fulfilled,
@@ -120,7 +123,13 @@ const chatReducer = createSlice({
       builder.addCase(
         createChat.fulfilled,
         (state: any, action: PayloadAction<any>) => {
-          state.chats.push(action.payload);
+          state.chats.unshift(action.payload);
+        }
+      ),
+      builder.addCase(
+        createChatWithTitle.fulfilled,
+        (state: any, action: PayloadAction<any>) => {
+          state.chats.unshift(action.payload);
         }
       ),
       builder.addCase(
@@ -160,7 +169,6 @@ const chatReducer = createSlice({
 
 export const selectChats = (state: RootState) => state.chat;
 
-// export const { addMessage, setSelectedChat, setCurrentTab } =
-//   chatReducer.actions;
+export const { resetChat } = chatReducer.actions;
 
 export default chatReducer.reducer;

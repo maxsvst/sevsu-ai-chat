@@ -29,17 +29,18 @@ export const Header = () => {
   const { fullName } = useSelector(selectUser);
 
   useEffect(() => {
-    dispatch(getUser());
+    (async () => await dispatch(getUser()).unwrap())();
   }, [fullName]);
 
   return (
     <div className={styles.header}>
-      <div className={styles.headerItem} onClick={() => router.push("/")}>
+      <div className={styles.headerItem}>
         <HealthIconSmall />
         <span style={{ userSelect: "none" }}>AIChat</span>
       </div>
       <div className={styles.headerItemWrapper}>
         <div
+          style={{ cursor: "pointer" }}
           className={styles.headerItem}
           onClick={() => dispatch(setMenuVisibility(!isMenuVisible))}
         >
